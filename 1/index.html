@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Object Detection </title>
+  <title>Object Detection Studio</title>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -28,14 +28,14 @@
       flex-direction: column;
     }
 
-    /* 1. Header Bar: ย้ายโหมดและการทำงานหลักขึ้นด้านบนทั้งหมด */
+    /* Header Bar */
     .top-navbar {
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
       padding: 12px 28px;
       display: grid;
-      grid-template-columns: 220px 1fr auto;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
       gap: 20px;
       z-index: 10;
@@ -51,7 +51,7 @@
       color: var(--accent-orange);
     }
 
-    /* Mode Pills สลับโหมดตรงกลาง Header */
+    /* Mode Pills Center */
     .mode-pills-center {
       justify-self: center;
       display: flex;
@@ -79,7 +79,7 @@
       box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
     }
 
-    /* ปุ่มอัปโหลด + สถานะ อยู่ขวาบน Header */
+    /* Header Actions Right */
     .header-actions {
       display: flex;
       align-items: center;
@@ -122,7 +122,7 @@
       border-radius: 50%;
     }
 
-    /* 2. Main Studio Grid: ซ้ายเป็น Canvas กว้าง / ขวาเป็น Inspector */
+    /* Studio Layout */
     .studio-grid {
       display: grid;
       grid-template-columns: 1fr 340px;
@@ -132,7 +132,6 @@
       height: calc(100vh - 65px);
     }
 
-    /* พื้นที่แสดงผลตรงกลาง (Center Viewport) */
     .workspace-area {
       background: var(--panel-bg);
       border-radius: 20px;
@@ -172,7 +171,6 @@
       pointer-events: none;
     }
 
-    /* แผงตั้งค่าด้านขวา (Right Inspector Panel) */
     .inspector-panel {
       background: var(--panel-bg);
       border-radius: 20px;
@@ -207,7 +205,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* Segmented Selection */
     .segmented-control {
       display: flex;
       background: #f8fafc;
@@ -246,7 +243,6 @@
       font-family: inherit;
     }
 
-    /* Sliders */
     .slider-item {
       display: flex;
       flex-direction: column;
@@ -274,7 +270,6 @@
       cursor: pointer;
     }
 
-    /* Performance Metric Box ด้านล่างสุด */
     .metric-card {
       margin-top: auto;
       background: #f8fafc;
@@ -300,15 +295,14 @@
 
   <!-- Top Navigation Bar -->
   <header class="top-navbar">
-    <div class="brand-logo">Vision <span>AI</span></div>
+    <!-- แก้ไขชื่อเป็น Object Detection -->
+    <div class="brand-logo">Object <span>Detection</span></div>
 
-    <!-- ย้ายโหมดมาตรงกลาง Header -->
     <div class="mode-pills-center">
       <button id="btnImage" class="pill-btn active">🖼️ Image Mode</button>
       <button id="btnWebcam" class="pill-btn">📹 Live Cam</button>
     </div>
 
-    <!-- Action & Status ด้านขวา -->
     <div class="header-actions">
       <label for="imageUpload" class="btn-upload-header" id="uploadBtnLabel">
         + Upload Image
@@ -325,7 +319,6 @@
   <!-- Studio Workspace Grid -->
   <div class="studio-grid">
     
-    <!-- Central Viewport -->
     <main class="workspace-area">
       <div class="media-card">
         <img id="imageDisplay" src="" style="display:none;" alt="Preview">
@@ -334,11 +327,9 @@
       </div>
     </main>
 
-    <!-- Right Inspector Panel -->
     <aside class="inspector-panel">
       <div class="inspector-title">Inspector & Settings</div>
 
-      <!-- Model Section -->
       <div class="control-group">
         <span class="section-label">Model Selection</span>
         <div class="segmented-control">
@@ -351,7 +342,6 @@
         </select>
       </div>
 
-      <!-- Parameters Section -->
       <div class="control-group">
         <span class="section-label">Parameters</span>
         
@@ -372,7 +362,6 @@
         </div>
       </div>
 
-      <!-- Hardware Section -->
       <div class="control-group">
         <span class="section-label">Hardware Delegate</span>
         <select id="delegateSelect" class="custom-select">
@@ -381,7 +370,6 @@
         </select>
       </div>
 
-      <!-- Performance Stats -->
       <div class="metric-card">
         <div id="doneText" class="metric-value">Done in --ms</div>
         <div class="metric-sub">Inference Time: <span id="inferenceTime">0.00</span> ms</div>
