@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision AI Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-ambient: linear-gradient(135deg, #fff7ed 0%, #e0f2fe 50%, #f8fafc 100%);
+      --panel-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --accent-cyan: #06b6d4;
+      --accent-orange: #f97316;
+      --gradient-active: linear-gradient(135deg, #f97316 0%, #06b6d4 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Prompt', sans-serif;
+      background: var(--bg-ambient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 1. Header Bar: ย้ายโหมดและการทำงานหลักขึ้นด้านบนทั้งหมด */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 28px;
+      display: grid;
+      grid-template-columns: 220px 1fr auto;
+      align-items: center;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    .brand-logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .brand-logo span {
+      color: var(--accent-orange);
+    }
+
+    /* Mode Pills สลับโหมดตรงกลาง Header */
+    .mode-pills-center {
+      justify-self: center;
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 30px;
+    }
+
+    .pill-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill-btn.active {
+      background: var(--gradient-active);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+    }
+
+    /* ปุ่มอัปโหลด + สถานะ อยู่ขวาบน Header */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-upload-header {
+      background: #ffffff;
+      border: 2px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-upload-header:hover {
+      background: var(--accent-cyan);
+      color: #ffffff;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0284c7;
+      background: #e0f2fe;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background-color: var(--accent-cyan);
+      border-radius: 50%;
+    }
+
+    /* 2. Main Studio Grid: ซ้ายเป็น Canvas กว้าง / ขวาเป็น Inspector */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      padding: 24px 28px;
+      flex: 1;
+      height: calc(100vh - 65px);
+    }
+
+    /* พื้นที่แสดงผลตรงกลาง (Center Viewport) */
+    .workspace-area {
+      background: var(--panel-bg);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .media-card {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    #imageDisplay, #videoDisplay {
+      display: block;
+      max-width: 100%;
+      max-height: 75vh;
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    #outputCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    /* แผงตั้งค่าด้านขวา (Right Inspector Panel) */
+    .inspector-panel {
+      background: var(--panel-bg);
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .inspector-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Segmented Selection */
+    .segmented-control {
+      display: flex;
+      background: #f8fafc;
+      padding: 3px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .seg-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .seg-btn.active {
+      background: #ffffff;
+      color: var(--accent-cyan);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .custom-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      background: #f8fafc;
+      outline: none;
+      font-family: inherit;
+    }
+
+    /* Sliders */
+    .slider-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .val-badge {
+      background: #e0f2fe;
+      color: #0284c7;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+
+    /* Performance Metric Box ด้านล่างสุด */
+    .metric-card {
+      margin-top: auto;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .metric-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-orange);
+    }
+
+    .metric-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="brand-logo">Vision <span>AI</span></div>
+
+    <!-- ย้ายโหมดมาตรงกลาง Header -->
+    <div class="mode-pills-center">
+      <button id="btnImage" class="pill-btn active">🖼️ Image Mode</button>
+      <button id="btnWebcam" class="pill-btn">📹 Live Cam</button>
+    </div>
+
+    <!-- Action & Status ด้านขวา -->
+    <div class="header-actions">
+      <label for="imageUpload" class="btn-upload-header" id="uploadBtnLabel">
+        + Upload Image
+      </label>
+      <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <span id="status">Ready</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Studio Workspace Grid -->
+  <div class="studio-grid">
+    
+    <!-- Central Viewport -->
+    <main class="workspace-area">
+      <div class="media-card">
+        <img id="imageDisplay" src="" style="display:none;" alt="Preview">
+        <video id="videoDisplay" autoplay playsinline muted style="display:none;"></video>
+        <canvas id="outputCanvas"></canvas>
+      </div>
+    </main>
+
+    <!-- Right Inspector Panel -->
+    <aside class="inspector-panel">
+      <div class="inspector-title">Inspector & Settings</div>
+
+      <!-- Model Section -->
+      <div class="control-group">
+        <span class="section-label">Model Selection</span>
+        <div class="segmented-control">
+          <button id="btnStandard" class="seg-btn active">Standard</button>
+          <button id="btnUploadModel" class="seg-btn">Custom</button>
+        </div>
+        <select id="modelSelect" class="custom-select">
+          <option value="efficientdet_lite0">EfficientDet-Lite0</option>
+          <option value="efficientdet_lite2">EfficientDet-Lite2</option>
+        </select>
+      </div>
+
+      <!-- Parameters Section -->
+      <div class="control-group">
+        <span class="section-label">Parameters</span>
+        
+        <div class="slider-item">
+          <div class="slider-header">
+            <span>Max Results</span>
+            <span id="maxResultsVal" class="val-badge">3</span>
+          </div>
+          <input type="range" id="maxResults" min="1" max="10" step="1" value="3">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-header">
+            <span>Score Threshold</span>
+            <span id="thresholdVal" class="val-badge">0.50</span>
+          </div>
+          <input type="range" id="scoreThreshold" min="0.1" max="0.9" step="0.05" value="0.5">
+        </div>
+      </div>
+
+      <!-- Hardware Section -->
+      <div class="control-group">
+        <span class="section-label">Hardware Delegate</span>
+        <select id="delegateSelect" class="custom-select">
+          <option value="GPU">GPU Accelerated</option>
+          <option value="CPU">CPU Only</option>
+        </select>
+      </div>
+
+      <!-- Performance Stats -->
+      <div class="metric-card">
+        <div id="doneText" class="metric-value">Done in --ms</div>
+        <div class="metric-sub">Inference Time: <span id="inferenceTime">0.00</span> ms</div>
+      </div>
+    </aside>
+
+  </div>
+
+  <script type="module" src="detector.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f4f6f8;
+  color: #333;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+  width: 280px;
+  background: #ffffff;
+  padding: 24px;
+  border-right: 1px solid #e0e0e0;
+}
+
+.sidebar h3 {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.setting-group {
+  margin-bottom: 20px;
+}
+
+.setting-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.status-msg {
+  font-size: 13px;
+  color: #008080;
+  font-weight: bold;
+}
+
+/* Main Display Area */
+.main-content {
+  flex: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.mode-toggle {
+  background: #e0e0e0;
+  border-radius: 20px;
+  padding: 3px;
+}
+
+.toggle-btn {
+  border: none;
+  background: transparent;
+  padding: 8px 18px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background: #008080;
+  color: #fff;
+}
+
+/* Container ที่ใช้วาง Canvas ทับรูป/วิดีโอ */
+.media-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 700px;
+  min-height: 380px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.wrapper img, .wrapper video {
+  display: block;
+  max-width: 100%;
+  max-height: 480px;
+}
+
+#outputCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.upload-area {
+  margin-top: 24px;
+}
+
+.upload-btn {
+  background-color: #008080;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  display: inline-block;
+  transition: background 0.2s;
+}
+
+.upload-btn:hover {
+  background-color: #006666;
+}
