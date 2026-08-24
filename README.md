@@ -20,6 +20,18 @@
         Score Threshold: ปรับระดับความแน่ใจขั้นต่ำของ AI (0.00 - 1.00)
 
         Hardware Delegate: เลือกการประมวลผล (แนะนำ GPU Accelerated จะเร็วกว่า CPU)
+
+ขั้นตอนการทำงาน
+
+    ดึงภาพสด: เบราว์เซอร์ดึงเฟรมภาพจากกล้อง Webcam ผ่าน HTML5 Video API
+
+    ส่งเข้า Task: JavaScript นำเฟรมภาพนั้นส่งไปให้ MediaPipe Task (ObjectDetector) ประมวลผล
+
+    AI วิเคราะห์: โมเดล AI คำนวณหาตำแหน่งประเภทวัตถุ
+
+    ส่งค่ากลับ: AI คืนค่าผลลัพธ์เป็นพิกัดกรอบ (Bounding Box Coordinates), ชื่อวัตถุ (Label), และค่าความมั่นใจ (Confidence Score)
+
+    วาดผลลัพธ์: JavaScript นำพิกัดที่ได้ไปวาดเป็นกรอบสี่เหลี่ยมและป้ายชื่อทับลงบน Canvas บนหน้าเว็บทันที
         
 ข้อจำกัด
 
